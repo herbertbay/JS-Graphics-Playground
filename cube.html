@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas</title>
+  
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+  </style>
+  
+</head>
+<body>
+  <canvas class="myCanvas">
+    <p>Add suitable fallback here.</p>
+  </canvas>
+  
+  <script>
+    const canvas = document.querySelector('.myCanvas');
+    const width = canvas.width = window.innerWidth;
+    const height = canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    
+    
+    function Ball(alpha, velAlpha, radius, color, size, plane) {
+      this.alpha = alpha
+      this.x = radius*Math.cos(alpha);
+      this.y = plane * 50;
+      this.z = radius*Math.sin(alpha);
+      this.velAlpha = velAlpha;
+      this.radius = radius;
+      this.color = color;
+      this.size = size;
+      this.plane = plane;
+    }
+    
+    // define ball draw method
+    
+    Ball.prototype.draw = function() {
+      let offsetX = 200;
+      let offsetY = 200;
+
+      let eye = 200;
+      let screen = 150;
+
+      let dist = eye + this.z;
+      let x = this.x / dist * screen;
+      let y = this.y / dist * screen;
+      let si = this.size / dist * screen;
+
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.arc(x + offsetX, y + offsetY, si, 0, 2 * Math.PI);
+      ctx.fill();
+    };
+    
+    // define ball update method
+    
+    Ball.prototype.update = function() {   
+      this.alpha += this.velAlpha;  
+      // console.log(this.alpha)
+      this.x = this.radius*Math.cos(this.alpha);
+      this.y = this.plane*50;
+      this.z = this.radius*Math.sin(this.alpha);
+    };
+    
+    // define ball collision detection
+    
+    Ball.prototype.collisionDetect = function() {
+      for(let j = 0; j < balls.length; j++) {
+        if(!(this === balls[j])) {
+          const dx = this.x - balls[j].x;
+          const dy = this.y - balls[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < this.size + balls[j].size) {
+            balls[j].color = this.color = 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')';
+          }
+        }
+      }
+    };
+        
+    
+
+    const size = 10; //random(10,20);
+    var alpha = 0;
+    let velAlpha = 0.01;
+    const radius = 100;
+
+    let balls = [];
+
+    let ball1 = new Ball(alpha, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, 1);
+    balls.push(ball1)
+    let ball2 = new Ball(alpha+Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, 1);
+    balls.push(ball2)
+    let ball3 = new Ball(alpha+2*Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, 1);
+    balls.push(ball3)
+    let ball4 = new Ball(alpha+3*Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, 1);
+    balls.push(ball4)
+    let ball5 = new Ball(alpha, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, -1);
+    balls.push(ball5)
+    let ball6 = new Ball(alpha+Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, -1);
+    balls.push(ball6)
+    let ball7 = new Ball(alpha+2*Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, -1);
+    balls.push(ball7)
+    let ball8 = new Ball(alpha+3*Math.PI/2, velAlpha, radius, 'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', size, -1);
+    balls.push(ball8)
+    
+    function degToRad(degrees) {
+      return degrees * Math.PI / 180;
+    };
+    
+    function random(min, max) {
+      const num = Math.floor(Math.random() * (max - min + 1)) + min;
+      return num;
+    }
+    
+    function loop() {
+      ctx.fillStyle = 'rgba(50, 50, 50, 0.25)';
+      ctx.fillRect(0, 0, width, height);
+    
+      for(let i = 0; i < balls.length; i++) {
+        balls[i].draw();
+        balls[i].update();
+      }
+      requestAnimationFrame(loop);
+    }
+    
+    loop();
+    
+  </script>
+</body>
+</html>
+
